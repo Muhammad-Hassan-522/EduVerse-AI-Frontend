@@ -5,11 +5,18 @@ import { CreateQuizComponent } from '../../components/create-quiz/create-quiz.co
 
 // Services
 import { QuizService } from '../../services/quiz.service';
-import { TeacherProfileService, TeacherProfile } from '../../services/teacher-profile.service';
+import {
+  TeacherProfileService,
+  TeacherProfile,
+} from '../../services/teacher-profile.service';
 import { CourseService } from '../../../../shared/services/course.service';
 
 // Models
-import { Quiz, QuizCreate, QuizUpdate } from '../../../../shared/models/quiz.model';
+import {
+  Quiz,
+  QuizCreate,
+  QuizUpdate,
+} from '../../../../shared/models/quiz.model';
 import { Course } from '../../../../shared/models/course.model';
 
 /**
@@ -35,12 +42,12 @@ export class QuizzesComponent implements OnInit {
   // ========================
   // Component State
   // ========================
-  quizzes: Quiz[] = [];                 // List of quizzes from backend
-  courses: Course[] = [];               // Available courses for dropdown
-  showModal = false;                    // Controls modal visibility
-  selectedQuiz: any = null;             // Quiz being edited (or null for create)
-  loading = false;                      // Loading state
-  error: string | null = null;          // Error message
+  quizzes: Quiz[] = []; // List of quizzes from backend
+  courses: Course[] = []; // Available courses for dropdown
+  showModal = false; // Controls modal visibility
+  selectedQuiz: any = null; // Quiz being edited (or null for create)
+  loading = false; // Loading state
+  error: string | null = null; // Error message
 
   // Teacher context (fetched on init)
   teacherProfile: TeacherProfile | null = null;
@@ -50,7 +57,7 @@ export class QuizzesComponent implements OnInit {
   constructor(
     private quizService: QuizService,
     private teacherProfileService: TeacherProfileService,
-    private courseService: CourseService
+    private courseService: CourseService,
   ) {}
 
   ngOnInit(): void {
@@ -241,22 +248,26 @@ export class QuizzesComponent implements OnInit {
 
     console.log('Updating quiz:', formData.id, updates);
 
-    this.quizService.updateQuiz(formData.id, this.teacherId, updates).subscribe({
-      next: (updatedQuiz) => {
-        console.log('Quiz updated successfully:', updatedQuiz);
-        // Replace in local array
-        const idx = this.quizzes.findIndex((q) => q.id === updatedQuiz.id);
-        if (idx > -1) {
-          this.quizzes[idx] = updatedQuiz;
-        }
-        this.updateQuizStatus();
-        this.closeModal();
-      },
-      error: (err) => {
-        console.error('Failed to update quiz:', err);
-        alert(err.error?.detail || 'Failed to update quiz. Please try again.');
-      },
-    });
+    this.quizService
+      .updateQuiz(formData.id, this.teacherId, updates)
+      .subscribe({
+        next: (updatedQuiz) => {
+          console.log('Quiz updated successfully:', updatedQuiz);
+          // Replace in local array
+          const idx = this.quizzes.findIndex((q) => q.id === updatedQuiz.id);
+          if (idx > -1) {
+            this.quizzes[idx] = updatedQuiz;
+          }
+          this.updateQuizStatus();
+          this.closeModal();
+        },
+        error: (err) => {
+          console.error('Failed to update quiz:', err);
+          alert(
+            err.error?.detail || 'Failed to update quiz. Please try again.',
+          );
+        },
+      });
   }
 
   /**

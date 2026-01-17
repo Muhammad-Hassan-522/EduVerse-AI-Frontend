@@ -28,7 +28,7 @@ export class QuizSubmissionService {
   // Base URL for quiz submission endpoints
   private readonly API_URL = 'http://localhost:8000/quiz-submissions';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // ========================
   // SUBMIT QUIZ ANSWERS (Auto-Grades)
@@ -59,7 +59,7 @@ export class QuizSubmissionService {
    */
   getSubmissionsByQuiz(
     quizId: string,
-    sort?: string
+    sort?: string,
   ): Observable<QuizSubmission[]> {
     let params = new HttpParams();
     if (sort) {
@@ -81,7 +81,7 @@ export class QuizSubmissionService {
    */
   getSubmissionsByStudent(
     studentId: string,
-    sort?: string
+    sort?: string,
   ): Observable<QuizSubmission[]> {
     let params = new HttpParams();
     if (sort) {
@@ -89,7 +89,7 @@ export class QuizSubmissionService {
     }
     return this.http.get<QuizSubmission[]>(
       `${this.API_URL}/student/${studentId}`,
-      { params }
+      { params },
     );
   }
 
@@ -103,7 +103,7 @@ export class QuizSubmissionService {
    */
   deleteSubmission(submissionId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(
-      `${this.API_URL}/${submissionId}`
+      `${this.API_URL}/${submissionId}`,
     );
   }
 
@@ -119,9 +119,12 @@ export class QuizSubmissionService {
    */
   getQuizSummary(quizId: string, topN: number = 5): Observable<QuizSummary> {
     const params = new HttpParams().set('top_n', topN.toString());
-    return this.http.get<QuizSummary>(`${this.API_URL}/summary/quiz/${quizId}`, {
-      params,
-    });
+    return this.http.get<QuizSummary>(
+      `${this.API_URL}/summary/quiz/${quizId}`,
+      {
+        params,
+      },
+    );
   }
 
   // ========================
@@ -136,12 +139,12 @@ export class QuizSubmissionService {
    */
   getStudentAnalytics(
     studentId: string,
-    recent: number = 5
+    recent: number = 5,
   ): Observable<StudentAnalytics> {
     const params = new HttpParams().set('recent', recent.toString());
     return this.http.get<StudentAnalytics>(
       `${this.API_URL}/analytics/student/${studentId}`,
-      { params }
+      { params },
     );
   }
 }
