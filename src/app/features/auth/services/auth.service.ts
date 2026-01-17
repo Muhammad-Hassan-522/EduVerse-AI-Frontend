@@ -11,6 +11,7 @@ import {
 } from '../models/signup-request.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { JwtPayload, User } from '../models/user.model';
+export type { JwtPayload, User };
 
 const TOKEN_KEY = 'eduverse_access_token';
 
@@ -23,7 +24,10 @@ export class AuthService {
 
   private API_BASE = 'http://localhost:8000/auth/token'; // adjust if needed
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {
     this.restoreSession();
   }
 
@@ -67,6 +71,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem('tenantId');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
@@ -107,6 +112,9 @@ export class AuthService {
     }
 
     const user = this.mapJwtToUser(payload);
+    if (user.tenantId) {
+      localStorage.setItem('tenantId', user.tenantId);
+    }
     this.currentUserSubject.next(user);
   }
 
@@ -120,6 +128,10 @@ export class AuthService {
       email: payload.email ?? '', // fallback if email not present in JWT
       role: payload.role,
       tenantId: payload.tenant_id,
+      studentId: payload.student_id,
+      teacherId: payload.teacher_id,
+      adminId: payload.admin_id,
+      fullName: payload.full_name,
     };
   }
 
@@ -158,6 +170,9 @@ export class AuthService {
     }
 
     const user = this.mapJwtToUser(payload);
+    if (user.tenantId) {
+      localStorage.setItem('tenantId', user.tenantId);
+    }
     console.log('Mapped user:', user); // <-- debug
     this.currentUserSubject.next(user);
 

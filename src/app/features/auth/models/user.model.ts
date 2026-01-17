@@ -3,6 +3,10 @@ export interface JwtPayload {
   email?: string;
   role: 'student' | 'teacher' | 'admin' | 'super_admin';
   tenant_id?: string;
+  student_id?: string;
+  teacher_id?: string;
+  admin_id?: string;
+  full_name?: string;
   exp: number;
   iat: number;
 }
@@ -13,4 +17,7 @@ export interface User {
   fullName?: string;
   role: JwtPayload['role'];
   tenantId?: string;
+  studentId?: string;
+  teacherId?: string;
+  adminId?: string;
 }

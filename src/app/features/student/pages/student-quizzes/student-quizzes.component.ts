@@ -6,11 +6,18 @@ import { QuizTakingModalComponent } from '../../components/quiz-taking-modal/qui
 // Services
 import { QuizService } from '../../../teacher/services/quiz.service';
 import { QuizSubmissionService } from '../../services/quiz-submission.service';
-import { StudentProfileService, StudentProfile } from '../../services/student-profile.service';
+import {
+  StudentProfileService,
+  StudentProfile,
+} from '../../services/student-profile.service';
 
 // Models
 import { Quiz } from '../../../../shared/models/quiz.model';
-import { QuizSubmission, QuizSubmissionCreate, AnswerItem } from '../../../../shared/models/quiz-submission.model';
+import {
+  QuizSubmission,
+  QuizSubmissionCreate,
+  AnswerItem,
+} from '../../../../shared/models/quiz-submission.model';
 
 /**
  * StudentQuizzesComponent
@@ -35,8 +42,8 @@ export class StudentQuizzesComponent implements OnInit {
   // ========================
   // Component State
   // ========================
-  quizzes: any[] = [];                      // Quizzes with submission status
-  submissions: QuizSubmission[] = [];        // Student's previous submissions
+  quizzes: any[] = []; // Quizzes with submission status
+  submissions: QuizSubmission[] = []; // Student's previous submissions
   showModal = false;
   selectedQuiz: any = null;
   viewOnly = false;
@@ -52,7 +59,7 @@ export class StudentQuizzesComponent implements OnInit {
   constructor(
     private quizService: QuizService,
     private submissionService: QuizSubmissionService,
-    private studentProfileService: StudentProfileService
+    private studentProfileService: StudentProfileService,
   ) {}
 
   ngOnInit(): void {
@@ -73,8 +80,8 @@ export class StudentQuizzesComponent implements OnInit {
     this.studentProfileService.getMyProfile().subscribe({
       next: (profile) => {
         this.studentProfile = profile;
-        this.studentId = profile.id;  // Student's MongoDB _id
-        this.tenantId = profile.tenantId || '';  // tenantId is at root level, not in user
+        this.studentId = profile.id; // Student's MongoDB _id
+        this.tenantId = profile.tenantId || ''; // tenantId is at root level, not in user
 
         console.log('Student profile loaded:', {
           studentId: this.studentId,
@@ -97,24 +104,19 @@ export class StudentQuizzesComponent implements OnInit {
    */
   loadQuizzesAndSubmissions(): void {
     // Load quizzes
-    this.quizService
-      .getQuizzes({
-        tenant_id: this.tenantId,
-        sort: '-createdAt',
-      })
-      .subscribe({
-        next: (quizzes) => {
-          console.log('Quizzes loaded:', quizzes.length);
+    this.quizService.getStudentAvailableQuizzes().subscribe({
+      next: (quizzes) => {
+        console.log('Quizzes loaded:', quizzes.length);
 
-          // Now load submissions to merge status
-          this.loadSubmissions(quizzes);
-        },
-        error: (err) => {
-          console.error('Failed to load quizzes:', err);
-          this.error = 'Failed to load quizzes. Please try again.';
-          this.loading = false;
-        },
-      });
+        // Now load submissions to merge status
+        this.loadSubmissions(quizzes);
+      },
+      error: (err) => {
+        console.error('Failed to load quizzes:', err);
+        this.error = 'Failed to load quizzes. Please try again.';
+        this.loading = false;
+      },
+    });
   }
 
   /**
@@ -127,13 +129,17 @@ export class StudentQuizzesComponent implements OnInit {
         console.log('Submissions loaded:', submissions.length);
 
         // Merge quizzes with submission data
-        this.quizzes = quizzes.map((quiz) => this.transformQuizForDisplay(quiz));
+        this.quizzes = quizzes.map((quiz) =>
+          this.transformQuizForDisplay(quiz),
+        );
         this.loading = false;
       },
       error: (err) => {
         console.error('Failed to load submissions:', err);
         // Still show quizzes even if submissions fail
-        this.quizzes = quizzes.map((quiz) => this.transformQuizForDisplay(quiz));
+        this.quizzes = quizzes.map((quiz) =>
+          this.transformQuizForDisplay(quiz),
+        );
         this.loading = false;
       },
     });
@@ -177,7 +183,7 @@ export class StudentQuizzesComponent implements OnInit {
    */
   getSelectedAnswer(submission: QuizSubmission, questionIndex: number): string {
     const answer = submission.answers.find(
-      (a) => a.questionIndex === questionIndex
+      (a) => a.questionIndex === questionIndex,
     );
     return answer?.selected || '';
   }
@@ -217,7 +223,7 @@ export class StudentQuizzesComponent implements OnInit {
       (q: any, index: number) => ({
         questionIndex: index,
         selected: q.selectedAnswer,
-      })
+      }),
     );
 
     const payload: QuizSubmissionCreate = {
@@ -248,7 +254,7 @@ export class StudentQuizzesComponent implements OnInit {
 
         this.closeModal();
         alert(
-          `Quiz submitted! Score: ${submission.obtainedMarks}/${this.selectedQuiz.totalQuestions} (${submission.percentage}%)`
+          `Quiz submitted! Score: ${submission.obtainedMarks}/${this.selectedQuiz.totalQuestions} (${submission.percentage}%)`,
         );
       },
       error: (err) => {
@@ -258,7 +264,9 @@ export class StudentQuizzesComponent implements OnInit {
           // Reload to get latest data
           this.loadQuizzesAndSubmissions();
         } else {
-          alert(err.error?.detail || 'Failed to submit quiz. Please try again.');
+          alert(
+            err.error?.detail || 'Failed to submit quiz. Please try again.',
+          );
         }
         this.closeModal();
       },

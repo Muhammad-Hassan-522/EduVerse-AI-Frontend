@@ -9,6 +9,7 @@ import {
   OnChanges,
   SimpleChanges,
   HostListener,
+  OnInit,
 } from '@angular/core';
 import { AuthService } from '../../../features/auth/services/auth.service';
 
@@ -35,7 +36,10 @@ export class SidebarComponent implements OnChanges {
   isMobile = false;
   menuItems: MenuItem[] = [];
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+  ) {}
 
   ngOnInit() {
     this.updateScreenSize();

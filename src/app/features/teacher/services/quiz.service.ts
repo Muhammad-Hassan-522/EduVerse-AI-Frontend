@@ -81,6 +81,17 @@ export class QuizService {
   }
 
   // ========================
+  // GET STUDENT QUIZZES (Enrolled Only)
+  // ========================
+  /**
+   * Fetches quizzes for the logged-in student based on enrolled courses.
+   * Uses the secure /student/me endpoint.
+   */
+  getStudentAvailableQuizzes(): Observable<Quiz[]> {
+    return this.http.get<Quiz[]>(`${this.API_URL}/student/me`);
+  }
+
+  // ========================
   // GET SINGLE QUIZ BY ID
   // ========================
   /**
@@ -106,7 +117,7 @@ export class QuizService {
   updateQuiz(
     quizId: string,
     teacherId: string,
-    updates: QuizUpdate
+    updates: QuizUpdate,
   ): Observable<Quiz> {
     // Backend expects teacher_id as query param for authorization
     const params = new HttpParams().set('teacher_id', teacherId);
@@ -127,7 +138,7 @@ export class QuizService {
    */
   deleteQuiz(
     quizId: string,
-    teacherId: string
+    teacherId: string,
   ): Observable<{ message: string }> {
     const params = new HttpParams().set('teacher_id', teacherId);
     return this.http.delete<{ message: string }>(`${this.API_URL}/${quizId}`, {
