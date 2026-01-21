@@ -173,7 +173,7 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
   }
 
   onConfirm(): void {
-    this.confirmDialogService.confirm();
+    this.confirmDialogService.onConfirm();
   }
 
   onCancel(): void {
